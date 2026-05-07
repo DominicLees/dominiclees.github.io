@@ -27,13 +27,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24.x'
       - name: Install dependencies
         run: npm ci
       - name: Run build script
         run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Save build output
+          path: public/
 
   deploy:
     needs: build
