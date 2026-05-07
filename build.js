@@ -8,9 +8,9 @@ if (!fs.existsSync('public')) fs.mkdirSync('public');
 // Compile pug files into html
 async function compilePages() {
     console.log("Starting compiling pug files");
-    const pugFiles = fs.readdirSync('./templates', { recursive: true }).filter(file => file.endsWith('.pug'));
+    const pugFiles = fs.readdirSync('./src/pages', { recursive: true }).filter(file => file.endsWith('.pug'));
     pugFiles.forEach(file => {
-        const inputPath = path.join('./templates', file);
+        const inputPath = path.join('./src/pages', file);
         const outputPath = path.join('./public', file.replace('.pug', '.html'));
 
         fs.mkdirSync(path.dirname(outputPath), { recursive: true });
