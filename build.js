@@ -3,6 +3,7 @@ const sass = require('sass');
 const fs = require('fs');
 const path = require('path');
 
+const args = process.argv.slice(2);
 let articles = [];
 
 // Compile complete pug files into html
@@ -72,9 +73,29 @@ async function compileCSS() {
     console.log("Finished compiling SCSS files");
 }
 
-compileBlogPosts()
-Promise.all([compilePages(), compileCSS()])
-.then(() => {
+// Determine which tasks to perform
+let task;
+// CSS only
+if (args.includes('--css')) {
+    task = compileCSS();
+// Blog posts only
+} else if (args.includes('--posts')) {
+    task = compileBlogPosts();
+    process.exit();
+// Pages only
+} else if (args.includes('--pages')) {
+    compileBlogPosts();
+    task = compilePages();
+// Default task
+} else {
+    task = Promise.all([
+        compileBlogPosts(),
+        Promise.all([compilePages(), compileCSS()])
+    ]);
+}
+
+// Perform build task
+task.then(() => {
     console.log("All tasks complete");
 }).catch(error => {
     console.error(error);
