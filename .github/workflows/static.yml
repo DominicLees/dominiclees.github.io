@@ -22,7 +22,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -34,18 +37,6 @@ jobs:
         run: npm ci
       - name: Run build script
         run: npm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Save build output
-          path: public/
-
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
