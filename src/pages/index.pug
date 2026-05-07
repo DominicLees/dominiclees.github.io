@@ -1,6 +1,10 @@
 head
-    title Hello World
+    title Dom's Blog
     link(rel="stylesheet", href="styles/master.css")
 body
-    h1 Hello World
-    h2 This was compiled from a pug file
+    h1 Dom's Blog
+    for article in articles
+        div
+            a(href=`./post/${article.filename}`) 
+                h2= article.title
+                p= article.subtitle
