@@ -1,5 +1,10 @@
-head
-    title= article.split('<h1>').pop().split('</h1>')[0]
-    link(rel="stylesheet", href="../styles/master.css")
-body
-    article!= article
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title= article.split('<h1>').pop().split('</h1>')[0]
+        link(rel="stylesheet", href="../styles/master.css")
+    body
+        include ./navbar.pug
+        article!= article
