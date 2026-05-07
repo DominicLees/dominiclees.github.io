@@ -25,8 +25,18 @@ async function compilePages() {
 function compileBlogPosts() {
     console.log("Starting compiling blog posts");
     const postTemplate = pug.compileFile('./src/templates/post.pug');
-    const pugFiles = fs.readdirSync('./posts', { recursive: true }).filter(file => file.endsWith('.pug'));
-    pugFiles.forEach(file => {
+
+    // Get all post files in order from newest to oldest
+    const postFiles = fs.readdirSync('./posts', { recursive: true })
+    .filter(file => file.endsWith('.pug'))
+    .sort((a, b) => {
+    const timeA = fs.statSync(path.join('./posts', a)).mtimeMs;
+    const timeB = fs.statSync(path.join('./posts', b)).mtimeMs;
+    return timeB - timeA;
+    });
+
+    // Render each post using the blog post template
+    postFiles.forEach(file => {
         const inputPath = path.join('./posts', file);
         const newFileName = file.replace('.pug', '.html')
         const outputPath = path.join('./public/post', newFileName);
@@ -37,7 +47,7 @@ function compileBlogPosts() {
         const html = postTemplate({article})
         fs.writeFileSync(outputPath, html);
         
-        // cache rendered articles
+        // Cache rendered articles
         if (articles.length >= 10) return;
         articles.push({
             filename: newFileName,
