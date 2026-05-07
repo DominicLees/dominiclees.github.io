@@ -6,23 +6,38 @@ const path = require('path');
 if (!fs.existsSync('public')) fs.mkdirSync('public');
 
 // Compile pug files into html
-const pugFiles = fs.readdirSync('./templates', { recursive: true }).filter(file => file.endsWith('.pug'));
-pugFiles.forEach(file => {
-    const inputPath = path.join('./templates', file);
-    const outputPath = path.join('./public', file.replace('.pug', '.html'));
+async function compilePages() {
+    console.log("Starting compiling pug files");
+    const pugFiles = fs.readdirSync('./templates', { recursive: true }).filter(file => file.endsWith('.pug'));
+    pugFiles.forEach(file => {
+        const inputPath = path.join('./templates', file);
+        const outputPath = path.join('./public', file.replace('.pug', '.html'));
 
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
-    const html = pug.renderFile(inputPath);
-    fs.writeFileSync(outputPath, html);
-})
+        const html = pug.renderFile(inputPath);
+        fs.writeFileSync(outputPath, html);
+    })
+    console.log("Finished compiling pug files");
+}
 
 // Compile SCSS files into CSS
-const scssFiles = fs.readdirSync('./src/styles', { recursive: true }).filter(file => file.endsWith('.scss'));
-scssFiles.forEach(file => {
-    const inputPath = path.join('./src/styles', file);
-    const outputPath = path.join('./public/styles', file.replace('.scss', '.css'));
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    const css = sass.compile(inputPath, {style: "compressed"}).css;
-    fs.writeFileSync(outputPath, css);
-})
+async function compileCSS() {
+    console.log("Starting compiling SCSS files");
+    const scssFiles = fs.readdirSync('./src/styles', { recursive: true }).filter(file => file.endsWith('.scss'));
+    scssFiles.forEach(file => {
+        const inputPath = path.join('./src/styles', file);
+        const outputPath = path.join('./public/styles', file.replace('.scss', '.css'));
+        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+        const css = sass.compile(inputPath, {style: "compressed"}).css;
+        fs.writeFileSync(outputPath, css);
+    })
+    console.log("Finished compiling SCSS files");
+}
+
+Promise.all([compilePages(), compileCSS()])
+.then(() => {
+    console.log("All tasks complete");
+}).catch(error => {
+    console.error(error);
+});
