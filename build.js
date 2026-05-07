@@ -3,11 +3,9 @@ const sass = require('sass');
 const fs = require('fs');
 const path = require('path');
 
-if (!fs.existsSync('public')) fs.mkdirSync('public');
-
-// Compile pug files into html
+// Compile complete pug files into html
 async function compilePages() {
-    console.log("Starting compiling pug files");
+    console.log("Starting compiling pages files");
     const pugFiles = fs.readdirSync('./src/pages', { recursive: true }).filter(file => file.endsWith('.pug'));
     pugFiles.forEach(file => {
         const inputPath = path.join('./src/pages', file);
@@ -18,7 +16,25 @@ async function compilePages() {
         const html = pug.renderFile(inputPath);
         fs.writeFileSync(outputPath, html);
     })
-    console.log("Finished compiling pug files");
+    console.log("Finished compiling pages files");
+}
+
+// Compile blog posts
+async function compileBlogPosts() {
+    console.log("Starting compiling blog posts");
+    const postTemplate = pug.compileFile('./src/templates/post.pug');
+    const pugFiles = fs.readdirSync('./posts', { recursive: true }).filter(file => file.endsWith('.pug'));
+    pugFiles.forEach(file => {
+        const inputPath = path.join('./posts', file);
+        const outputPath = path.join('./public/post', file.replace('.pug', '.html'));
+
+        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+
+        const article = pug.renderFile(inputPath);
+        const html = postTemplate({article})
+        fs.writeFileSync(outputPath, html);
+    })
+    console.log("Finished compiling blog posts");
 }
 
 // Compile SCSS files into CSS
@@ -35,7 +51,7 @@ async function compileCSS() {
     console.log("Finished compiling SCSS files");
 }
 
-Promise.all([compilePages(), compileCSS()])
+Promise.all([compilePages(), compileCSS(), compileBlogPosts()])
 .then(() => {
     console.log("All tasks complete");
 }).catch(error => {
