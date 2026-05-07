@@ -1,0 +1,25 @@
+{
+  "name": "dominiclees.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/DominicLees/dominiclees.github.io#readme",
+  "bugs": {
+    "url": "https://github.com/DominicLees/dominiclees.github.io/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DominicLees/dominiclees.github.io.git"
+  },
+  "license": "ISC",
+  "author": "Dominic Lees",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "pug": "^3.0.4"
+  },
+  "devDependencies": {}
+}
