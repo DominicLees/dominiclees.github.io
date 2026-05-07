@@ -1,10 +1,12 @@
 head
     title Dom's Blog
     link(rel="stylesheet", href="styles/master.css")
+    link(rel="stylesheet", href="styles/index.css")
 body
     h1 Dom's Blog
-    for article in articles
-        div
-            a(href=`./post/${article.filename}`) 
-                h2= article.title
-                p= article.subtitle
+    main
+        for article in articles
+            div
+                a(href=`./post/${article.filename}`) 
+                    h2= article.title
+                    p= article.subtitle

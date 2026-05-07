@@ -1,0 +1,40 @@
+main div {
+    border-bottom: 1px solid black;
+
+    a:visited {
+        color: rgb(120, 120, 120);
+    }
+
+    a:visited:hover {
+        color: black;
+    }
+
+    a:hover h2, a:hover p {
+        background-color: rgb(235, 235, 235);
+    }
+
+    h2 {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        margin: 0;
+    }
+
+    p {
+        margin: 0;
+        padding-bottom: 15px;
+    }
+}
+
+main div:nth-child(even) {
+    text-align: right;
+    
+    h2, p {
+        padding-right: 5px;
+    }
+}
+
+main div:nth-child(odd) {
+    h2, p {
+        padding-left: 5px;
+    }
+}
