@@ -1,10 +1,17 @@
 doctype html
 html(lang="en")
     head
+        - title = article.split('<h1>').pop().split('</h1>')[0]
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title= article.split('<h1>').pop().split('</h1>')[0]
+        meta(property="og:title" content=title)
+        meta(property="og:description" content=article.split('<h2>').pop().split('</h2>')[0])
+        meta(property="og:url" content="https://dominiclees.github.io/")
+        meta(property="og:type" content="website")
+        title= title
         link(rel="stylesheet", href="../styles/master.css")
+        link(rel="stylesheet", href="../styles/post.css")
     body
         include ./navbar.pug
-        article!= article
+        main 
+            article!= article
