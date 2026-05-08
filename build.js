@@ -31,9 +31,9 @@ function compileBlogPosts() {
     const postFiles = fs.readdirSync('./posts', { recursive: true })
     .filter(file => file.endsWith('.pug'))
     .sort((a, b) => {
-    const timeA = fs.statSync(path.join('./posts', a)).mtimeMs;
-    const timeB = fs.statSync(path.join('./posts', b)).mtimeMs;
-    return timeB - timeA;
+        const timeA = fs.statSync(path.join('./posts', a)).mtimeMs;
+        const timeB = fs.statSync(path.join('./posts', b)).mtimeMs;
+        return timeB - timeA;
     });
 
     // Render each post using the blog post template
@@ -73,6 +73,7 @@ async function compileCSS() {
     console.log("Finished compiling SCSS files");
 }
 
+const startTime = performance.now()
 // Determine which tasks to perform
 let task;
 // CSS only
@@ -80,8 +81,7 @@ if (args.includes('--css')) {
     task = compileCSS();
 // Blog posts only
 } else if (args.includes('--posts')) {
-    task = compileBlogPosts();
-    process.exit();
+    task = new Promise((resolve, reject) => resolve(compileBlogPosts()));
 // Pages only
 } else if (args.includes('--pages')) {
     compileBlogPosts();
@@ -96,7 +96,8 @@ if (args.includes('--css')) {
 
 // Perform build task
 task.then(() => {
-    console.log("All tasks complete");
+    const endTime = performance.now()
+    console.log(`All tasks complete in ${endTime - startTime}ms`);
 }).catch(error => {
     console.error(error);
 });
