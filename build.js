@@ -1,5 +1,7 @@
 const pug = require('pug');
 const sass = require('sass');
+const XMLParser = require('fast-xml-parser').XMLParser;
+const XMLBuilder = require('fast-xml-parser').XMLBuilder;
 const fs = require('fs');
 const path = require('path');
 
@@ -75,6 +77,30 @@ async function compileCSS() {
     console.log("Finished compiling SCSS files");
 }
 
+async function generateRSS() {
+    console.log("Starting generating RSS file");
+    // Read base xml file
+    const baseFile = fs.readFileSync("./src/rss.xml");
+    const parser = new XMLParser({ignoreAttributes: false});
+    let xml = parser.parse(baseFile);
+
+    // Add articles as items
+    xml.rss.channel.item = articles.map(article => {
+        return {
+            link: `https://dominiclees.github.io/post/${article.filename}`,
+            title: article.title,
+            description: article.subtitle
+        }
+    });
+
+    // Write completed file to public folder
+    const builder = new XMLBuilder({ignoreAttributes: false, format: true});
+    const content = builder.build(xml);
+    fs.mkdirSync(path.dirname("./public/feeds/rss.xml"), { recursive: true });
+    fs.writeFileSync("./public/feeds/rss.xml", content);
+    console.log("Finished generating RSS file");
+}
+
 // Determine which tasks to perform
 let task;
 // CSS only
@@ -91,7 +117,7 @@ if (args.includes('--css')) {
 } else {
     task = Promise.all([
         compileBlogPosts(),
-        Promise.all([compilePages(), compileCSS()])
+        Promise.all([compilePages(), compileCSS(), generateRSS()])
     ]);
 }
 
@@ -99,7 +125,7 @@ const startTime = performance.now()
 // Perform build task
 task.then(() => {
     const endTime = performance.now()
-    console.log(`All tasks complete in ${endTime - startTime}ms`);
+    console.log(`All tasks completed in ${endTime - startTime}ms`);
 }).catch(error => {
     console.error(error);
 });

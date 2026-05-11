@@ -1,0 +1,11 @@
+<!-- This is the template that is used to build the RSS file. -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+
+    <channel>
+        <title>Dom's Blog</title>
+        <link>https://dominiclees.github.io/</link>
+        <description>Cyber security and ice hockey</description>
+    </channel>
+
+</rss>
