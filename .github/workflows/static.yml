@@ -48,6 +48,8 @@ jobs:
     steps:
       - name: Download build result
         uses: actions/download-artifact@v5
+        with: 
+          path: './public'
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
