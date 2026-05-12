@@ -1,0 +1,11 @@
+mixin table(data)
+    table
+        thead
+            tr
+                each header in Object.keys(data[0])
+                    th= header
+            tbody
+                each row in data
+                    tr
+                        each value in Object.values(row)
+                            td= value

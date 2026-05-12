@@ -2,6 +2,7 @@ const pug = require('pug');
 const sass = require('sass');
 const XMLParser = require('fast-xml-parser').XMLParser;
 const XMLBuilder = require('fast-xml-parser').XMLBuilder;
+const { parse } = require('csv-parse/sync');
 const fs = require('fs');
 const path = require('path');
 
@@ -27,8 +28,9 @@ async function compilePages() {
 
 // Compile blog posts
 function compileBlogPosts() {
-    console.log("Starting compiling blog posts");
+    console.log('Starting compiling blog posts');
     const postTemplate = pug.compileFile('./src/templates/post.pug');
+    fs.mkdirSync('./public/post', { recursive: true });
 
     // Get all post files in order from newest to oldest
     const postFiles = fs.readdirSync('./posts', { recursive: true })
@@ -42,12 +44,20 @@ function compileBlogPosts() {
     // Render each post using the blog post template
     postFiles.forEach(file => {
         const inputPath = path.join('./posts', file);
-        const newFileName = file.replace('.pug', '.html')
+        const newFileName = file.replace('.pug', '.html').split('/').pop();
         const outputPath = path.join('./public/post', newFileName);
-        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
+        // Get CSV data and set to locals
+        const folder = path.join('./posts', path.dirname(file));
+        const csvFiles = fs.readdirSync(folder).filter(f => f.endsWith('.csv'));
+        const locals = {};
+        csvFiles.forEach(csvFile => {
+            const data = fs.readFileSync(path.join(folder, csvFile));
+            locals[path.basename(csvFile).split('.')[0]] = parse(data, { columns: true, skip_empty_lines: true });
+        });
+        
         // Render each article in html before passing it to the blog post template
-        const article = pug.renderFile(inputPath);
+        const article = pug.renderFile(inputPath, locals);
         const html = postTemplate({article})
         fs.writeFileSync(outputPath, html);
         
@@ -58,7 +68,7 @@ function compileBlogPosts() {
             subtitle: article.split('<h2>').pop().split('</h2>')[0]
         })
     })
-    console.log("Finished compiling blog posts");
+    console.log('Finished compiling blog posts');
 }
 
 // Compile SCSS files into CSS
