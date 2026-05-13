@@ -48,3 +48,18 @@ nav {
         }
     }
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+
+    th, td {
+        border: 1px solid black;
+        padding: 2px;
+    }
+
+    thead, tbody tr:nth-child(even) {
+        background-color: rgb(235, 235, 235);
+    }
+}
